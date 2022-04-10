@@ -19,24 +19,6 @@ from srunner.scenarioconfigs.route_scenario_configuration import RouteScenarioCo
 TRIGGER_THRESHOLD = 2.0  # Threshold to say if a trigger position is new or repeated, works for matching positions
 TRIGGER_ANGLE_THRESHOLD = 10  # Threshold to say if two angles can be considering matching when matching transforms.
 
-# for loading predefined weathers while parsing routes
-WEATHERS = {
-        '1': carla.WeatherParameters.ClearNoon,
-        '2': carla.WeatherParameters.ClearSunset,
-        '3': carla.WeatherParameters.CloudyNoon,
-        '4': carla.WeatherParameters.CloudySunset,
-        '5': carla.WeatherParameters.WetNoon,
-        '6': carla.WeatherParameters.WetSunset,
-        '7': carla.WeatherParameters.MidRainyNoon,
-        '8': carla.WeatherParameters.MidRainSunset,
-        '9': carla.WeatherParameters.WetCloudyNoon,
-        '10': carla.WeatherParameters.WetCloudySunset,
-        '11': carla.WeatherParameters.HardRainNoon,
-        '12': carla.WeatherParameters.HardRainSunset,
-        '13': carla.WeatherParameters.SoftRainNoon,
-        '14': carla.WeatherParameters.SoftRainSunset,
-}
-
 
 class RouteParser(object):
 
@@ -81,7 +63,7 @@ class RouteParser(object):
             new_config = RouteScenarioConfiguration()
             new_config.town = route.attrib['town']
             new_config.name = "RouteScenario_{}".format(route_id)
-            new_config.weather = RouteParser.parse_weather(route) # default: parse_weather(route)
+            new_config.weather = RouteParser.parse_weather(route)
             new_config.scenario_file = scenario_file
 
             waypoint_list = []  # the list of waypoints that can be found on this route
@@ -104,7 +86,6 @@ class RouteParser(object):
         """
 
         route_weather = route.find("weather")
-
         if route_weather is None:
 
             weather = carla.WeatherParameters(sun_altitude_angle=70, cloudiness=30)
@@ -136,19 +117,6 @@ class RouteParser(object):
 
         return weather
 
-    @staticmethod
-    def parse_preset_weather(route):
-        """
-        Returns one of the 14 preset weather condition. If the route
-        has no weather attribute, the default one is triggered.
-        """
-
-        if 'weather' not in route.attrib:
-            weather = carla.WeatherParameters(sun_altitude_angle=70, cloudiness=30)
-        else:
-            weather = WEATHERS[route.attrib['weather']]
-
-        return weather
 
     @staticmethod
     def check_trigger_position(new_trigger, existing_triggers):

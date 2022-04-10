@@ -19,12 +19,9 @@ from datetime import datetime
 from distutils.version import LooseVersion
 import importlib
 import os
-import sys
-import gc
 import pkg_resources
 import sys
 import carla
-import copy
 import signal
 
 from srunner.scenariomanager.carla_data_provider import *
@@ -33,7 +30,7 @@ from srunner.scenariomanager.watchdog import Watchdog
 
 from leaderboard.scenarios.scenario_manager import ScenarioManager
 from leaderboard.scenarios.route_scenario import RouteScenario
-from leaderboard.envs.sensor_interface import SensorInterface, SensorConfigurationInvalid
+from leaderboard.envs.sensor_interface import SensorConfigurationInvalid
 from leaderboard.autoagents.agent_wrapper import  AgentWrapper, AgentError
 from leaderboard.utils.statistics_manager import StatisticsManager
 from leaderboard.utils.route_indexer import RouteIndexer
@@ -41,10 +38,7 @@ from leaderboard.utils.route_indexer import RouteIndexer
 
 sensors_to_icons = {
     'sensor.camera.rgb':        'carla_camera',
-    'sensor.camera.semantic_segmentation': 'carla_camera',
-    'sensor.camera.depth':      'carla_camera',
     'sensor.lidar.ray_cast':    'carla_lidar',
-    'sensor.lidar.ray_cast_semantic':    'carla_lidar',
     'sensor.other.radar':       'carla_radar',
     'sensor.other.gnss':        'carla_gnss',
     'sensor.other.imu':         'carla_imu',
@@ -314,9 +308,6 @@ class LeaderboardEvaluator(object):
             scenario = RouteScenario(world=self.world, config=config, debug_mode=args.debug)
             self.statistics_manager.set_scenario(scenario.scenario)
 
-            # self.agent_instance._init()
-            # self.agent_instance.sensor_interface = SensorInterface()
-
             # Night mode
             if config.weather.sun_altitude_angle < 0.0:
                 for vehicle in scenario.ego_vehicles:
@@ -347,24 +338,24 @@ class LeaderboardEvaluator(object):
         print("\033[1m> Running the route\033[0m")
 
         # Run the scenario
-        # try:
-        self.manager.run_scenario()
+        try:
+            self.manager.run_scenario()
 
-        # except AgentError as e:
-        #     # The agent has failed -> stop the route
-        #     print("\n\033[91mStopping the route, the agent has crashed:")
-        #     print("> {}\033[0m\n".format(e))
-        #     traceback.print_exc()
+        except AgentError as e:
+            # The agent has failed -> stop the route
+            print("\n\033[91mStopping the route, the agent has crashed:")
+            print("> {}\033[0m\n".format(e))
+            traceback.print_exc()
 
-        #     crash_message = "Agent crashed"
+            crash_message = "Agent crashed"
 
-        # except Exception as e:
-        #     print("\n\033[91mError during the simulation:")
-        #     print("> {}\033[0m\n".format(e))
-        #     traceback.print_exc()
+        except Exception as e:
+            print("\n\033[91mError during the simulation:")
+            print("> {}\033[0m\n".format(e))
+            traceback.print_exc()
 
-        #     crash_message = "Simulation crashed"
-        #     entry_status = "Crashed"
+            crash_message = "Simulation crashed"
+            entry_status = "Crashed"
 
         # Stop the scenario
         try:
@@ -394,9 +385,6 @@ class LeaderboardEvaluator(object):
         """
         Run the challenge mode
         """
-        # agent_class_name = getattr(self.module_agent, 'get_entry_point')()
-        # self.agent_instance = getattr(self.module_agent, agent_class_name)(args.agent_config)
-
         route_indexer = RouteIndexer(args.routes, args.scenarios, args.repetitions)
 
         if args.resume:
@@ -412,13 +400,6 @@ class LeaderboardEvaluator(object):
 
             # run
             self._load_and_run_scenario(args, config)
-
-            for obj in gc.get_objects():
-                try:
-                    if torch.is_tensor(obj) or (hasattr(obj, 'data') and torch.is_tensor(obj.data)):
-                        print(type(obj), obj.size())
-                except:
-                    pass
 
             route_indexer.save_state(args.checkpoint)
 
@@ -443,7 +424,7 @@ def main():
     parser.add_argument('--debug', type=int, help='Run with debug output', default=0)
     parser.add_argument('--record', type=str, default='',
                         help='Use CARLA recording feature to create a recording of the scenario')
-    parser.add_argument('--timeout', default="600.0",
+    parser.add_argument('--timeout', default="60.0",
                         help='Set the CARLA client timeout value in seconds')
 
     # simulation setup

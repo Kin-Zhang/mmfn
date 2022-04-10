@@ -48,7 +48,7 @@ from leaderboard.utils.route_manipulation import interpolate_trajectory
 
 ROUTESCENARIO = ["RouteScenario"]
 
-SECONDS_GIVEN_PER_METERS = 0.8 # for timeout
+SECONDS_GIVEN_PER_METERS = 0.8
 INITIAL_SECONDS_DELAY = 5.0
 
 NUMBER_CLASS_TRANSLATION = {
@@ -336,17 +336,12 @@ class RouteScenario(BasicScenario):
 
             return selected_scenario
 
-        def select_scenario_randomly(list_scenarios):
-            # randomly select a scenario
-            return rgn.choice(list_scenarios)
-
         # The idea is to randomly sample a scenario per trigger position.
         sampled_scenarios = []
         for trigger in potential_scenarios_definitions.keys():
             possible_scenarios = potential_scenarios_definitions[trigger]
 
-            # scenario_choice = select_scenario(possible_scenarios) # original prioritized sampling
-            scenario_choice = select_scenario_randomly(possible_scenarios) # random sampling
+            scenario_choice = select_scenario(possible_scenarios)
             del possible_scenarios[possible_scenarios.index(scenario_choice)]
             # We keep sampling and testing if this position is present on any of the scenarios.
             while position_sampled(scenario_choice, sampled_scenarios):
@@ -461,7 +456,7 @@ class RouteScenario(BasicScenario):
             'Town07': 110,
             'Town08': 180,
             'Town09': 300,
-            'Town10HD': 120, # town10 doesn't load properly for some reason
+            'Town10': 120,
         }
 
         amount = town_amount[config.town] if config.town in town_amount else 0

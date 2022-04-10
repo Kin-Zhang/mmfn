@@ -21,14 +21,10 @@ from leaderboard.envs.sensor_interface import CallBack, OpenDriveMapReader, Spee
 from leaderboard.autoagents.autonomous_agent import Track
 
 MAX_ALLOWED_RADIUS_SENSOR = 3.0
-MAX_ALLOWED_RADIUS_SENSOR = 1000.0 # increased for topdown map generation
 
 SENSORS_LIMITS = {
-    'sensor.camera.rgb': 10,
-    'sensor.camera.semantic_segmentation': 10,
-    'sensor.camera.depth': 10,
+    'sensor.camera.rgb': 4,
     'sensor.lidar.ray_cast': 1,
-    'sensor.lidar.ray_cast_semantic': 1,
     'sensor.other.radar': 2,
     'sensor.other.gnss': 1,
     'sensor.other.imu': 1,
@@ -56,11 +52,8 @@ class AgentWrapper(object):
         'sensor.opendrive_map',
         'sensor.speedometer',
         'sensor.camera.rgb',
-        'sensor.camera.semantic_segmentation',
-        'sensor.camera.depth',
         'sensor.camera',
         'sensor.lidar.ray_cast',
-        'sensor.lidar.ray_cast_semantic',
         'sensor.other.radar',
         'sensor.other.gnss',
         'sensor.other.imu'
@@ -100,27 +93,7 @@ class AgentWrapper(object):
             # These are the sensors spawned on the carla world
             else:
                 bp = bp_library.find(str(sensor_spec['type']))
-                if sensor_spec['type'].startswith('sensor.camera.semantic_segmentation'):
-                    bp.set_attribute('image_size_x', str(sensor_spec['width']))
-                    bp.set_attribute('image_size_y', str(sensor_spec['height']))
-                    bp.set_attribute('fov', str(sensor_spec['fov']))
-
-                    sensor_location = carla.Location(x=sensor_spec['x'], y=sensor_spec['y'],
-                                                     z=sensor_spec['z'])
-                    sensor_rotation = carla.Rotation(pitch=sensor_spec['pitch'],
-                                                     roll=sensor_spec['roll'],
-                                                     yaw=sensor_spec['yaw'])
-                elif sensor_spec['type'].startswith('sensor.camera.depth'):
-                    bp.set_attribute('image_size_x', str(sensor_spec['width']))
-                    bp.set_attribute('image_size_y', str(sensor_spec['height']))
-                    bp.set_attribute('fov', str(sensor_spec['fov']))
-
-                    sensor_location = carla.Location(x=sensor_spec['x'], y=sensor_spec['y'],
-                                                     z=sensor_spec['z'])
-                    sensor_rotation = carla.Rotation(pitch=sensor_spec['pitch'],
-                                                     roll=sensor_spec['roll'],
-                                                     yaw=sensor_spec['yaw'])
-                elif sensor_spec['type'].startswith('sensor.camera'):
+                if sensor_spec['type'].startswith('sensor.camera'):
                     bp.set_attribute('image_size_x', str(sensor_spec['width']))
                     bp.set_attribute('image_size_y', str(sensor_spec['height']))
                     bp.set_attribute('fov', str(sensor_spec['fov']))
@@ -134,21 +107,9 @@ class AgentWrapper(object):
                     sensor_rotation = carla.Rotation(pitch=sensor_spec['pitch'],
                                                      roll=sensor_spec['roll'],
                                                      yaw=sensor_spec['yaw'])
-                elif sensor_spec['type'].startswith('sensor.lidar.ray_cast_semantic'):
-                    bp.set_attribute('range', str(85))
-                    bp.set_attribute('rotation_frequency', str(10)) # default: 10, change to 20 for old lidar models
-                    bp.set_attribute('channels', str(64))
-                    bp.set_attribute('upper_fov', str(10))
-                    bp.set_attribute('lower_fov', str(-30))
-                    bp.set_attribute('points_per_second', str(600000))
-                    sensor_location = carla.Location(x=sensor_spec['x'], y=sensor_spec['y'],
-                                                     z=sensor_spec['z'])
-                    sensor_rotation = carla.Rotation(pitch=sensor_spec['pitch'],
-                                                     roll=sensor_spec['roll'],
-                                                     yaw=sensor_spec['yaw'])
                 elif sensor_spec['type'].startswith('sensor.lidar'):
                     bp.set_attribute('range', str(85))
-                    bp.set_attribute('rotation_frequency', str(10)) # default: 10, change to 20 to generate 360 degree LiDAR point cloud
+                    bp.set_attribute('rotation_frequency', str(10))
                     bp.set_attribute('channels', str(64))
                     bp.set_attribute('upper_fov', str(10))
                     bp.set_attribute('lower_fov', str(-30))
@@ -176,9 +137,9 @@ class AgentWrapper(object):
                                                      yaw=sensor_spec['yaw'])
 
                 elif sensor_spec['type'].startswith('sensor.other.gnss'):
-                    # bp.set_attribute('noise_alt_stddev', str(0.000005))
-                    # bp.set_attribute('noise_lat_stddev', str(0.000005))
-                    # bp.set_attribute('noise_lon_stddev', str(0.000005))
+                    bp.set_attribute('noise_alt_stddev', str(0.000005))
+                    bp.set_attribute('noise_lat_stddev', str(0.000005))
+                    bp.set_attribute('noise_lon_stddev', str(0.000005))
                     bp.set_attribute('noise_alt_bias', str(0.0))
                     bp.set_attribute('noise_lat_bias', str(0.0))
                     bp.set_attribute('noise_lon_bias', str(0.0))
