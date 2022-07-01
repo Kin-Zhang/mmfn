@@ -1,0 +1,40 @@
+# please remember to change this!!! TODO or will change by modi
+absolute_path: '/home/kin/mmfn'
+carla_sh_path: '/home/kin/CARLA_0.9.10.1/CarlaUE4.sh'
+
+host: 'localhost'
+port: 2000
+trafficManagerPort: 0
+record: ''
+repetitions: 1
+resume: False
+checkpoint: None
+
+# Seed used by the TrafficManager (default: 0)
+trafficManagerSeed: 0
+timeout: 20000
+no_rendering: False
+
+# ============== for all route test=============== #
+debug: False
+
+# only for debug ===> or just test the agent
+routes: 'leaderboard/data/only_one_town.xml'
+# towns: ['Town01', 'Town02', 'Town06', 'Town07']
+# routes: 'leaderboard/data/training_routes/'
+
+scenarios: 'leaderboard/data/all_towns_traffic_scenarios.json'
+
+track: 'MAP' # 'SENSORS'
+
+# ====================== Expert Agent ========================= #
+# agent: 'team_code/expert_agent/human_agent.py'
+agent: 'team_code/expert_agent/mmfn_pilot.py'
+# agent: 'team_code/expert_agent/auto_pilot.py'
+defaults:
+  - agent_config: expert
+
+# ====================== E2E Agent ========================= #
+# agent: 'team_code/e2e_agent/mmfn_imgnet.py'
+# defaults:
+#   - agent_config: e2e

@@ -1,0 +1,12 @@
+model_path: 'log/e_vectornet'
+data_save: data/tmp
+town: null
+route_id: null
+turn_KP: 1.25
+turn_KI: 0.75
+turn_KD: 0.3
+turn_n: 40
+speed_KP: 5.0
+speed_KI: 0.5
+speed_KD: 1.0
+speed_n: 40

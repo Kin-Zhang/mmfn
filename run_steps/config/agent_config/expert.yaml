@@ -1,0 +1,33 @@
+force_destory_actor: True # maybe have better effects!
+weather_change: False # whether change the weather
+max_stop_num: 300 
+stop_thresh: 0.1
+save_video_fps: 20
+save_data: True
+data_save: data/train
+
+# camera setting
+camera_x: 1.5
+camera_z: 2.4
+camera_w: 900
+camera_h: 256
+camera_fov: 100
+
+# leaderboard
+route_id: null
+town: null
+
+debug_print: False # pls remember to set False when collect data 
+image_height: 288
+image_width: 1024
+slow_distance: 15
+counter_destory: 200
+max_speed: 20 # km/h
+slow_speed: 10 # km/h
+max_throttle: 0.6
+frame_record: 2
+wandb_mode: "online"
+route_file: None
+
+# for human agent
+mode: log

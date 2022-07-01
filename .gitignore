@@ -129,3 +129,11 @@ dmypy.json
 .pyre/
 
 leaderboard/data/
+
+# hydra
+outputs/*
+
+# data
+data/*
+
+.vscode/*

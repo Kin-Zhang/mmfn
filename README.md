@@ -1,32 +1,23 @@
 # MMFN: Multi-Modal Fusion Net for End-to-End Autonomous Driving
 
-The whole dataset, model file ,and codes will be released after paper review, here is preview on `readme` in codes.
+official branch for IROS 2022 paper codes including collecting data, all benchmark in paper, training scripts and evaluations etc.
 
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/mmfn-multi-modal-fusion-net-for-end-to-end/carla-map-leaderboard-on-carla)](https://paperswithcode.com/sota/carla-map-leaderboard-on-carla?p=mmfn-multi-modal-fusion-net-for-end-to-end)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/mmfn-multi-modal-fusion-net-for-end-to-end/carla-map-leaderboard-on-carla)](https://paperswithcode.com/sota/carla-map-leaderboard-on-carla?p=mmfn-multi-modal-fusion-net-for-end-to-end) [![arXiv](https://img.shields.io/badge/arXiv-1234.56789-b31b1b.svg)](https://arxiv.org/abs/1234.56789)
 
 ## Quickly view
 
-Background: How to efficiently use high-level information or sensor data in end-to-end driving. To handle more scenarios as following figures (captures from CARLA leaderboard video)
+Background: How to efficiently use high-level information or sensor data in end-to-end driving. The whole architecture in MMFN from origin paper:
 
 <center>
-<img src="assets/readme/background.png" width="80%">
+<img src="assets/readme/Arch.png" width="100%">
 </center>
+**Scripts** quick view in `run_steps` folder:
 
-
-The whole architecture in MMFN from origin paper [after reviewed]
-
-Scripts quick view in `mmfn` folder:
-
-- `phase0_collect.py` : collect data in select routes files or town map
+- `phase0_run_eval.py` : collect data/ run eval in select routes files or town map
 - `phase1_preprocess.py` : pre-process data before training to speed up the whole training time
-- `phase2_train.py`: after having training data, run this one to have model parameters files. (You can try training process on Docker also)
-- `phase2_train_multipgpu.py` : use for DDP multi-GPU only to speed up training.
-- `phase3_eval.py`: after having pre-trained or trained model from yourself, run this one to show the car's behavior on Carla leaderboard
-- `phase4_replay.py` : using CARLA recorder to replay log file and analyses things
+- `phase2_train.py`: after having training data, run this one to have model parameters files. pls remember to check the config (You can try training process on Docker also)
 
-This repo also provide another experts with multi-road consideration.
-
-
+This repo also provide experts with multi-road consideration. Refer to more experts, pls check latest [carla-expert repo](https://github.com/Kin-Zhang/carla-expert)
 
 ## 0. Setup
 
@@ -47,24 +38,26 @@ pip3 install -r requirements.txt
 conda activate mmfn
 ```
 
-If you already have CARLA 0.9.10.1, just ==skip this one==
-Download and setup CARLA 0.9.10.1
+For people who don't have CARLA [在内地的同学可以打开scripts换一下函数 走镜像下载更快点.. ]
 
 ```Shell
-chmod +x mmfn/scripts/setup_carla.sh
-./mmfn/scripts/setup_carla.sh
+chmod +x scripts/*
+./run/setup_carla.sh
+# input version
+10.1
+# auto download now ...
 ```
 
 bashrc or zshrc setting:
 ```bash
 # << Leaderboard setting
-export USER_HOME=/home/kin
-export CARLA_SUBMIT_FOLDER=${USER_HOME}/mmfn
-export CARLA_ROOT=${USER_HOME}/carla
-export SCENARIO_RUNNER_ROOT=${CARLA_SUBMIT_FOLDER}/scenario_runner
-export LEADERBOARD_ROOT=${CARLA_SUBMIT_FOLDER}/leaderboard
-export TEAM_ROOT=${CARLA_SUBMIT_FOLDER}/team_code
-export PYTHONPATH="${CARLA_ROOT}/PythonAPI/carla/":"${SCENARIO_RUNNER_ROOT}":"${CARLA_SUBMIT_FOLDER}/":"${LEADERBOARD_ROOT}":"${CARLA_ROOT}/PythonAPI/carla/dist/carla-0.9.10-py3.7-linux-x86_64.egg":${PYTHONPATH}
+# ===> pls remeber to change this one
+export CODE_FOLDER=/home/kin/mmfn
+export CARLA_ROOT=/home/kin/CARLA_0.9.10.1
+# ===> pls remeber to change this one
+export SCENARIO_RUNNER_ROOT=${CODE_FOLDER}/scenario_runner
+export LEADERBOARD_ROOT=${CODE_FOLDER}/leaderboard
+export PYTHONPATH="${CARLA_ROOT}/PythonAPI/carla/":"${SCENARIO_RUNNER_ROOT}":"${LEADERBOARD_ROOT}":"${CARLA_ROOT}/PythonAPI/carla/dist/carla-0.9.10-py3.7-linux-x86_64.egg":"${CODE_FOLDER}/team_code":${PYTHONPATH}
 ```
 
 ## 1. Dataset
@@ -76,7 +69,7 @@ The dataset is structured as follows:
 ```
 - TownX_{tiny,short,long}: corresponding to different towns and routes files
     - routes_X: contains data for an individual route
-        - rgb_{front, left, right, rear}: multi-view camera images at 400x300 resolution
+        - rgb_front: multi-view camera images at 400x300 resolution
         - lidar: 3d point cloud in .npy format
         - measurements: contains ego-agent's position, velocity and other metadata
 ```
@@ -87,45 +80,38 @@ TBD
 
 ### Plan B: Generation
 
-First, please modify the config files and on `.zshrc` or `.bashrc` remember to export your `CARLA_ROOT`, If you want to use Town10HD, Please remember to download extra assets map from CARLA, like here:
-```bash
-cd path_to_carla
-./ImportAssets.sh
-```
-```bash
-absolute_path: '/home/kin/mmfn/'
+First, please modify the config files and on `.zshrc` or `.bashrc` remember to export your `CARLA_ROOT`
 
-scenarios: 'assets/all_towns_traffic_scenarios.json'
-host: 'localhost'
+```bash
+# please remember to change this!!! TODO or will change by modi
+absolute_path: '/home/kin/mmfn'
+carla_sh_path: '/home/kin/CARLA_0.9.10.1/CarlaUE4.sh'
+
+# Seed used by the TrafficManager (default: 0)
 port: 2000
-trafficManagerPort: 0
+trafficManagerSeed: 0
 
-# ============== for all route test =============== #
-debug: True
-towns: ['Town01', 'Town02', 'Town06', 'Town07']
-routes: 'leaderboard/data/debug_routes/'
+# ============== for all route test=============== #
+debug: False
 
-record: True
-checkpoint: 'tmp.json'
-start_id: -999
-max_route_num: 999
+# only for debug ===> or just test the agent
+routes: 'leaderboard/data/only_one_town.xml'
+# towns: ['Town01', 'Town02', 'Town06', 'Town07']
+# routes: 'leaderboard/data/training_routes/'
+
+scenarios: 'leaderboard/data/all_towns_traffic_scenarios.json'
 
 # ====================== Agent ========================= #
-track: 'MAP'
-agent: 'agent_code/autoagents/mmfn/mmfn_pilot.py'
-agent_config:
-  if_save_data: True
-  data_save: data/tmp
-  debug_print: True
-  pr_step: 10
+track: 'MAP' # 'SENSORS'
+agent: 'team_code/expert_agent/auto_pilot.py'
+defaults:
+  - agent_config: expert
 ```
 
-Please write great port according to the CARLA server, and try to use Epic or vulkan mode since opengl mode will have black point on raining day
+Please write great port according to the CARLA server, and inside the script it will try to use Epic or vulkan mode since opengl mode will have black point on raining day
 
 ```bash
-./CarlaUE4.sh -quality-level=Epic -world-port=2000
-conda activate mmfn
-python mmfn/phase1_collect.py
+python mmfb/phase0_run_eval.py
 ```
 
 The dataset folder tree will like these one:
@@ -214,15 +200,7 @@ This part is for evaluating to result or leaderboard, you can also download the 
     python mmfn/phase3_eval.py
     ```
 
-## 4. Replay
 
-If you want to look all the behavior on ego cars during evaluation, please set the record option on config file to True, and giving the correct reply path in `reply.yaml` :
-
-```bash
-python mmfn/phase4_replay.py time_factor=2.0 start=30.0
-```
-
-More detailed about CARLA Recorder can be found in this [link](https://carla.readthedocs.io/en/latest/adv_recorder/)
 
 ## Cite Us
 
@@ -230,7 +208,7 @@ More detailed about CARLA Recorder can be found in this [link](https://carla.rea
 @inproceedings{mmfnzhang,
   title={MMFN: Multi-Modal Fusion Net for End-to-End Autonomous Driving},
   author={Qingwen Zhang, Mingkai Tang, Ruoyu Geng, Feiyi Chen, Ren Xin, Lujia Wang},
-  booktitle={2022 IEEE International Conference on Intelligent Robotics and Systems (IROS): In submission},
+  booktitle={2022 IEEE International Conference on Intelligent Robotics and Systems (IROS)},
   year={2022},
   organization={IEEE}
 }
@@ -240,11 +218,9 @@ More detailed about CARLA Recorder can be found in this [link](https://carla.rea
 
 This implementation is based on code from several repositories. Please see our paper reference part to get more information on our reference
 
-- [LBC](https://github.com/dotchen/LearningByCheating)
-- [WorldOnRails](https://github.com/dotchen/WorldOnRails)
-
+- [LBC](https://github.com/dotchen/LearningByCheating), [WorldOnRails](https://github.com/dotchen/WorldOnRails)
 - [Transfuser](https://github.com/autonomousvision/transfuser)
-- [2020_CARLA_challenge](https://github.com/bradyz/2020_CARLA_challenge)
-- [CARLA Leaderboard](https://github.com/carla-simulator/leaderboard)
-- [Scenario Runner](https://github.com/carla-simulator/scenario_runner)
+- [CARLA Leaderboard](https://github.com/carla-simulator/leaderboard), [Scenario Runner](https://github.com/carla-simulator/scenario_runner)
 
+- [carla-brid-view](https://github.com/deepsense-ai/carla-birdeye-view)
+- [pylot](https://github.com/erdos-project/pylot)
