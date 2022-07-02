@@ -48,6 +48,11 @@ chmod +x scripts/*
 # auto download now ...
 ```
 
+Download the vectorize lib with `.so`, will install based on your system version
+```Shell
+./run/setup_lib.sh
+```
+
 bashrc or zshrc setting:
 ```bash
 # << Leaderboard setting
@@ -62,23 +67,22 @@ export PYTHONPATH="${CARLA_ROOT}/PythonAPI/carla/":"${SCENARIO_RUNNER_ROOT}":"${
 
 ## 1. Dataset
 
-The data is generated with ```leaderboard/team_code/auto_pilot.py``` in 8 CARLA towns using the routes and scenarios files provided at ```leaderboard/data``` on CARLA 0.9.10.1
+The data is generated with ```leaderboard/expert_agent/mmfn_pilot.py``` in 8 CARLA towns using the routes and scenarios files provided at ```leaderboard/data``` on CARLA 0.9.10.1
 
 The dataset is structured as follows:
 
 ```
 - TownX_{tiny,short,long}: corresponding to different towns and routes files
-    - routes_X: contains data for an individual route
+    - TownX_X_07_01_23_26_34: contains data for an individual route
         - rgb_front: multi-view camera images at 400x300 resolution
         - lidar: 3d point cloud in .npy format
         - measurements: contains ego-agent's position, velocity and other metadata
+        - radar: radar point in .npy format
+        - maps: birdview maps image
+        - opendrive: opendrive xodr file
 ```
 
-### Plan A: Download
-
-TBD
-
-### Plan B: Generation
+### How to Generate
 
 First, please modify the config files and on `.zshrc` or `.bashrc` remember to export your `CARLA_ROOT`
 
@@ -111,62 +115,64 @@ defaults:
 Please write great port according to the CARLA server, and inside the script it will try to use Epic or vulkan mode since opengl mode will have black point on raining day
 
 ```bash
-python mmfb/phase0_run_eval.py
+python run_steps/phase0_run_eval.py
 ```
 
 The dataset folder tree will like these one:
 
 ```bash
 data
-└── expert
-    ├── Town02_01_09_00_12_27
-        ├── lidar
-        ├── maps
-        ├── measurements
-        ├── opendrive
-        ├── rgb_front
-        └── radar
-    ├── Town02_01_09_00_23_08
-    └── Town02_01_09_00_23_22
-
+└── train
+	├── Town06_tiny
+        ├── Town06_00_07_01_23_40_19
+            ├── lidar
+            ├── maps
+            ├── measurements
+            ├── opendrive
+            ├── rgb_front
+            └── radar
+        ├── Town06_00_07_01_23_40_19
+        └── Town06_00_07_01_23_40_19
 ```
 
+The scripts will start a CARLA with specific port number, example running like this:
 
+![](assets/readme/collecting_data.png)
 
 ## 2. Training
 
 No need CARLA in these phase, please remember to modify the train.yml config file and especially ==modify the DATA PATH==
 
-The record and visulization on training params use the wandb, please login before train, more details can be found at [wandb.ai](wandb.ai), You can disable wandb from config file using `disabled`
+The record and visualization on training params use the wandb, please login before train, more details can be found at [wandb.ai](wandb.ai), You can disable wandb from config file using `disabled`
 
-### Docker
+1. To speed up the training since the data process is somehow time consuming. Save the finished data:
 
-There is a Dockerfile ready for building training environment, but please remember to using `-v` link the datasets folder to container.
+    ```bash
+    python run_steps/phase1_preprocess_data.py
+    ```
 
+2. DDP if you want to use multi-GPU through DDP or multi computers: `nproc_per_node`  as using GPU，`nnodes` as computer number
 
+    ```bash
+    CUDA_VISIBLE_DEVICES=0,1,2,3,4,5 python -m torch.distributed.launch --nproc_per_node=4 --nnodes=1 run_steps/phase2_train_net.py
+    ```
 
-After building docker you can train directly with:
+3. Or one single GPU can just run:
 
-```bash
-python mmfn/phase2_train.py
-```
+   ```bash
+   python run_steps/phase2_train_net.py
+   ```
 
-Or DDP if you want to use multi-GPU through DDP or multi computers: `nproc_per_node`  as using GPU，`nnodes` as computer number
-
-```bash
-CUDA_VISIBLE_DEVICES=0,1,2,3,4,5 python -m torch.distributed.launch --nproc_per_node=4 --nnodes=1 mmfn/phase2_train_multipgpu.py --batch_size 64 --epochs 201
-```
-
-
+Note for Docker: There is a `Dockerfile` ready for building training environment, but please remember to using `-v` link the datasets folder to container.
 
 ### Benchmark
 
 fork from transfuser codes, the benchmark training file and process can run as following command:
 
 ```bash
-python agent_code/benchmark/aim/train.py --device 'cuda:0'
-python agent_code/benchmark/cilrs/train.py --device 'cuda:0'
-python agent_code/benchmark/transfuser/train.py --device 'cuda:0'
+python team_code/benchmark/aim/train.py --device 'cuda:0'
+python team_code/benchmark/cilrs/train.py --device 'cuda:0'
+python team_code/benchmark/transfuser/train.py --device 'cuda:0'
 ```
 
 
@@ -174,33 +180,33 @@ python agent_code/benchmark/transfuser/train.py --device 'cuda:0'
 
 ## 3. Evaluate
 
-This part is for evaluating to result or leaderboard, you can also download the modal file and try upload to leaderbaord through leaderbaord branch.
+This part is for evaluating to result or leaderboard, you can also download the modal file and try upload to leaderboard through leaderbaord branch. The whole process is the same way like generate dataset
 
 1. Download or Train a model file saved to `log/mmfn`
-
-2. Open carla
-
-    ```bash
-    ./scripts/launch_carla.sh 1 2000
-    ```
 
 3. Keep `config/eval.yaml` same as `collect.yaml` but modified model file location as first step side
 
     ```bash
-    scenarios: "assets/all_towns_traffic_scenarios.json"
-    track: 'MAP'
-    agent: 'agent_code/teamagents/mmfn_agent.py'
-    agent_config:
-      model_path: 'log/expert_mmfn'
+    routes: 'leaderboard/data/only_one_town.xml'
+    # ====================== Agent ========================= #
+    track: 'MAP' # 'SENSORS'
+    agent: 'team_code/e2e_agent/mmfn_imgnet.py'
+    defaults:
+      - agent_config: e2e
+    
+    # ======== e2e.yaml file for model path ============ #
+    model_path: 'log/mmfn_vec' 
     ```
     
 4. Running eval python script and see result json file in `result` Folder
 
     ```bash
-    python mmfn/phase3_eval.py
+    python run_steps/phase0_run_eval.py
     ```
 
+If all setting is correct, you will see eval like this one, pls remember to change route to `only_one_town` for debug.
 
+![](assets/readme/running_example.png)
 
 ## Cite Us
 

@@ -38,13 +38,23 @@ def main(args):
     # config init =============> make all path with absolute
     args.scenarios = os.path.join(args.absolute_path,args.scenarios)
     args.agent     = os.path.join(args.absolute_path, args.agent)
+    
     if 'data_save' in args.agent_config:
         args.agent_config.data_save = os.path.join(args.absolute_path, args.agent_config.data_save)
         Path(args.agent_config.data_save).mkdir(exist_ok=True, parents=True)
     
+    if 'model_path' in args.agent_config:
+        args.agent_config.model_path = os.path.join(args.absolute_path, args.agent_config.model_path)
+
     for rfile in routes_files:
+        # check if there are many route files
         if len(routes_files) >1:
             args.agent_config.town = rfile.split('/')[-1].split('_')[1].capitalize()
+            # make sure have route folder
+            if 'data_save' in args.agent_config:
+                args.agent_config.data_save = os.path.join(args.absolute_path, args.agent_config.data_save, rfile.split('/')[-1].split('.')[0][7:].capitalize())
+                Path(args.agent_config.data_save).mkdir(exist_ok=True, parents=True)
+
         print('-'*20 + "TEST Agent: " + bc.OKGREEN + args.agent.split('/')[-1] + bc.ENDC + '-'*20)
         args.routes = rfile
         args.agent = os.path.join(args.absolute_path, args.agent)
@@ -67,9 +77,6 @@ def main(args):
         leaderboard_evaluator = LeaderboardEvaluator(args, StatisticsManager())
         leaderboard_evaluator.run(args)
         # run official leaderboard ====>
-        
-        # only for debug
-        break
 
         # kill CARLA ===> attention will kill all CARLA!
         # server_manager.stop()

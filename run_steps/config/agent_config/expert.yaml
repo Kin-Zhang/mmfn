@@ -4,7 +4,7 @@ max_stop_num: 300
 stop_thresh: 0.1
 save_video_fps: 20
 save_data: True
-data_save: data/train
+data_save: data/nss_0702
 
 # camera setting
 camera_x: 1.5
@@ -31,3 +31,13 @@ route_file: None
 
 # for human agent
 mode: log
+
+# for vector map
+lane_node_num: 10
+feature_num: 5
+
+
+up: 28
+down: 28
+left: 28
+right: 28

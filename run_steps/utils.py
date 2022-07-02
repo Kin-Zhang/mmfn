@@ -63,3 +63,22 @@ class CarlaServerManager():
         kill_carla()
         time.sleep(self._t_sleep)
         log.info(f"Kill Carla Servers!")
+
+from importlib import import_module
+def load_entry_point(name):
+    mod_name, attr_name = name.split(":")
+    mod = import_module(mod_name)
+    fn = getattr(mod, attr_name)
+    return fn
+
+import torch, random
+import numpy as np
+
+def init_torch():
+    # 固定随机种子
+    seed = 42
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    torch.cuda.empty_cache()

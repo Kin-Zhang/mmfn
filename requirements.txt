@@ -28,3 +28,4 @@ ray
 pickle-mixin
 tqdm
 einops
+debugpy

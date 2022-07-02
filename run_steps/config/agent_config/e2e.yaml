@@ -1,7 +1,7 @@
-model_path: 'log/e_vectornet'
-data_save: data/tmp
+model_path: 'log/mmfn_vec' 
 town: null
 route_id: null
+
 turn_KP: 1.25
 turn_KI: 0.75
 turn_KD: 0.3

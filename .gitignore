@@ -137,3 +137,7 @@ outputs/*
 data/*
 
 .vscode/*
+
+assets/package/*
+
+log/*
