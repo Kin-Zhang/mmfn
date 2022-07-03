@@ -1,14 +1,12 @@
-import time, random
-import datetime
-import pathlib
-import json
-
+import time, random, os
+import datetime, json, pathlib
+from pathlib import Path
 import cv2
 import carla
 
 from leaderboard.autoagents import autonomous_agent
 from .planner_controller import RoutePlanner
-from .utils import imu_msg, LocalizationOperator, from_imu, from_gps
+from .utils import imu_msg, LocalizationOperator, from_imu, from_gps, build_rmap, RoughMap
 from .carla_birdeye_view import BirdViewProducer, BirdViewCropType, PixelDimensions
 import numpy as np
 from PIL import Image
@@ -41,7 +39,10 @@ class BaseAgent(autonomous_agent.AutonomousAgent):
     def setup(self, path_to_conf_file):
         self.track = autonomous_agent.Track.MAP
         self.config = path_to_conf_file
-        
+
+        self.rough_map = RoughMap(self.config.up, self.config.down, self.config.left, self.config.right, self.config.lane_node_num, self.config.feature_num)
+        self.rough_map_have_load = False
+
         self.step = -1
         self.wall_start = time.time()
         self.initialized = False
@@ -58,13 +59,14 @@ class BaseAgent(autonomous_agent.AutonomousAgent):
             now = datetime.datetime.now()
             if self.config.town is None:
                 self.config.town = "TEST"
-            string = pathlib.Path(self.config.town).stem+ '_' + 'rid' + '_' + str(self.config.route_id) +'_'
+            string = pathlib.Path(self.config.town).stem+ '_' + str(self.config.route_id) +'_'
             string += '_'.join(map(lambda x: '%02d' % x, (now.month, now.day, now.hour, now.minute, now.second)))
             self.save_path = pathlib.Path(self.config.data_save) / string
             print("Data save path", self.save_path)
             self.save_path.mkdir(parents=True, exist_ok=False)
             
             (self.save_path / 'measurements').mkdir(parents=True, exist_ok=True)
+            (self.save_path / 'vectormap').mkdir(parents=True, exist_ok=True)
             (self.save_path / 'lidar').mkdir(parents=True, exist_ok=True)
             (self.save_path / 'maps').mkdir(parents=True, exist_ok=True)
             (self.save_path / 'opendrive').mkdir(parents=True, exist_ok=True)
@@ -158,9 +160,19 @@ class BaseAgent(autonomous_agent.AutonomousAgent):
         )
         if self.save_path is not None:
             print("Loading success for map, save path is:", self.save_path)
-            with open(self.save_path / 'opendrive' / "opstr.txt", "w") as text_file:
+            open_drive_folder = os.path.join(self.save_path,"opendrive")
+            with open(os.path.join(open_drive_folder, "opstr.txt"), "w") as text_file:
                 text_file.write(input_data['opendrive'][1]['opendrive'])
-    
+            
+            lib_path = os.path.abspath('../../../assets/package/opendrive_parse_lib')
+            if os.path.exists(lib_path):
+                # vector representation save
+                tmp_dir = open_drive_folder
+                build_rmap([tmp_dir], lib_path)
+                self.rough_map.read(os.path.join(open_drive_folder,"a.rmap"))
+                print("load rough_map which lane_num = ", len(self.rough_map.lanes))
+                self.rough_map_have_load = True
+
     def tick(self, input_data,timestamp):
 
         self.step += 1
@@ -186,8 +198,7 @@ class BaseAgent(autonomous_agent.AutonomousAgent):
         # 大致给了框 通过现有的定位来生成map地图
         birdview = self.birdview_producer.produce(agent_tf, np.array([2.51,1.07]))
         rgb_birdview = cv2.cvtColor(BirdViewProducer.as_rgb(birdview), cv2.COLOR_BGR2RGB)
-
-        return {
+        result = {
                 'rgb_front': rgb_front,
                 'lidar' : input_data['lidar'][1],
                 'gps': gps,
@@ -197,6 +208,16 @@ class BaseAgent(autonomous_agent.AutonomousAgent):
                 'opendrive': rgb_birdview,
                 'radar': radar_all,
                 }
+        
+        if self.rough_map_have_load:
+            pose2d = np.array([result['gps'][0], result['gps'][1], result['compass']]).astype(np.float)
+            vectormap_lanes = self.rough_map.process(pose2d)
+            if vectormap_lanes.shape[0] == 0:
+                vectormap_lanes = np.zeros((1,10,5))
+                print("warning, the vehicle is out of lane")
+                result['vectormap_lanes'] = vectormap_lanes
+            result['vectormap_lanes'] = vectormap_lanes
+        return result
 
 
     def save(self, near_node, far_node, near_command, steer, throttle, brake, target_speed, tick_data, reverse):
@@ -239,6 +260,10 @@ class BaseAgent(autonomous_agent.AutonomousAgent):
 
         np.save(self.save_path / 'lidar' / ('%04d.npy' % frame), lidar, allow_pickle=True)
         np.save(self.save_path / 'radar' / ('%04d.npy' % frame), tick_data['radar'], allow_pickle=True)
+        
+        if self.rough_map_have_load:
+            np.save(self.save_path / 'vectormap' / ('%04d.npy' % frame), tick_data['vectormap_lanes'], allow_pickle=True)
+
         self.change_weather()
 
     def change_weather(self):

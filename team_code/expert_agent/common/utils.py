@@ -332,3 +332,108 @@ class LocalizationOperator(object):
         if USE_EKF:
             self.estimate(imu_msg)
         return self._pose_msg.transform
+
+import os
+from tqdm import tqdm
+def build_rmap(all_path: list, lib_path):
+    print("start to build rmap. map_number:", len(all_path))
+    bash_path = os.path.join(lib_path, "setup.sh")
+    cmd1 = " . " + bash_path
+    dhdmap_path = os.path.join(lib_path,"lib/dhdmap/rough_map_test_node")
+    is_error = False
+    for path in tqdm(all_path):
+        
+        cmd2 = dhdmap_path + " " + path
+        cmd = cmd1 + " && " + cmd2
+        print(cmd)
+        tmp = os.popen(cmd).readlines()
+        if (tmp[0]!="ok"):
+            is_error = True
+            break
+    if (is_error):
+        print("Error in build rmap")
+    else:
+        print("build rmap successfully")
+    return is_error
+
+
+from cv2 import pointPolygonTest
+import numpy as np
+
+from shapely.geometry import Polygon,Point, MultiPoint
+import shapely
+import math
+class RoughLane:
+    lane_info: Polygon
+    lane_nodes: MultiPoint
+
+class RoughMap:
+    #[lane_num]
+    lanes: list
+
+    def __init__(self, up:float, down:float, left:float, right:float, lane_node_num:int, feature_num:int):
+        self.polygon = Polygon(
+            [[up, -left],
+            [-down, -left],
+            [-down, right],
+            [up, right]]
+        )
+        self.feature_num = feature_num
+        self.lane_node_num = lane_node_num
+
+    def read(self, file_path) -> None:
+       f = open(file_path)
+       f.readline()
+       lane_num = int(f.readline().strip().split(" ")[1])
+       self.lanes= []
+       tmp = []
+       for i in range(lane_num):
+           rough_lane = RoughLane()
+           node_num = int(f.readline().strip().split(" ")[1])
+           lane_info = np.array(f.readline().strip().split()).astype(np.float).reshape(4,2)
+           rough_lane.lane_info = Polygon(lane_info)
+           lane_nodes = []
+           for j in range(node_num):
+               node_data = np.array(f.readline().strip().split(" ")).astype(np.float)
+               lane_nodes.append(node_data)
+               tmp.append([node_data[0],node_data[1]])
+
+           rough_lane.lane_nodes = np.array(lane_nodes)
+           
+           self.lanes.append(rough_lane)
+       tmp = np.array(tmp)
+
+    def process(self, pose2d: np.ndarray):
+        """
+        Params:
+            pose2d:[3] -> [x,y,theta]
+        Return:
+            res: [num, lane_node_num, feature_num]
+        """
+        
+        x,y,theta = pose2d
+
+        polygon_1 = shapely.affinity.rotate(self.polygon, theta*180/math.pi, origin=(0,0))
+        polygon_2 = shapely.affinity.translate(polygon_1, x, y)
+        
+        res = []
+        
+        for lane in self.lanes:
+            if polygon_2.disjoint(lane.lane_info):
+                continue
+            points = []
+            for lane_node in lane.lane_nodes:
+                p = Point(lane_node[0], lane_node[1])
+                p = shapely.affinity.translate(p, -x, -y)
+                p = shapely.affinity.rotate(p, -theta*180/math.pi, origin=(0,0))
+                point = [p.x, p.y] + list(lane_node[2:])
+                points.append(point)
+            if len(points) < self.lane_node_num:
+                points = points  + [[0.0]*self.feature_num]*(self.lane_node_num-len(points))
+
+            res.append(points)
+        res = np.array(res)
+        return res
+
+        
+

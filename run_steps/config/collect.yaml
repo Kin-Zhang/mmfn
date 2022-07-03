@@ -19,9 +19,10 @@ no_rendering: False
 debug: False
 
 # only for debug ===> or just test the agent
-routes: 'leaderboard/data/only_one_town.xml'
-# towns: ['Town01', 'Town02', 'Town06', 'Town07']
-# routes: 'leaderboard/data/training_routes/'
+# routes: 'leaderboard/data/only_one_town.xml'
+towns: ['Town01', 'Town03', 'Town06', 'Town07']
+# towns: ['Town02', 'Town04', 'Town05', 'Town10']
+routes: 'leaderboard/data/training_routes/'
 
 scenarios: 'leaderboard/data/all_towns_traffic_scenarios.json'
 
@@ -35,6 +36,8 @@ defaults:
   - agent_config: expert
 
 # ====================== E2E Agent ========================= #
+# agent: 'team_code/e2e_agent/mmfn_radar.py'
+# agent: 'team_code/e2e_agent/mmfn_vectornet.py'
 # agent: 'team_code/e2e_agent/mmfn_imgnet.py'
 # defaults:
-#   - agent_config: e2e
+#   - agent_config: e2e # pls name the model as 'best_model.pth'

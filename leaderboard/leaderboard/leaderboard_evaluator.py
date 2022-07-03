@@ -259,6 +259,8 @@ class LeaderboardEvaluator(object):
         try:
             self._agent_watchdog.start()
             agent_class_name = getattr(self.module_agent, 'get_entry_point')()
+            if 'route_id' in args.agent_config:
+                args.agent_config.route_id = int(config.name.split('_')[1].split('/')[0])
             self.agent_instance = getattr(self.module_agent, agent_class_name)(args.agent_config)
             config.agent = self.agent_instance
 

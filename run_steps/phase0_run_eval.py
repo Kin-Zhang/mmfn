@@ -19,8 +19,8 @@ from pathlib import Path
 def main(args):
     # start CARLA =======
     args.trafficManagerPort = args.port + 6000
-    server_manager = CarlaServerManager(args.carla_sh_path, port=args.port)
-    server_manager.start()
+    # server_manager = CarlaServerManager(args.carla_sh_path, port=args.port)
+    # server_manager.start()
 
     # select the route files from folder or just file
     if args.routes.split('/')[-1].split('.')[-1] != 'xml':
@@ -38,26 +38,26 @@ def main(args):
     # config init =============> make all path with absolute
     args.scenarios = os.path.join(args.absolute_path,args.scenarios)
     args.agent     = os.path.join(args.absolute_path, args.agent)
-    
+
     if 'data_save' in args.agent_config:
-        args.agent_config.data_save = os.path.join(args.absolute_path, args.agent_config.data_save)
+        origin_data_folder = args.agent_config.data_save
+        args.agent_config.data_save = os.path.join(args.absolute_path, origin_data_folder)
         Path(args.agent_config.data_save).mkdir(exist_ok=True, parents=True)
     
     if 'model_path' in args.agent_config:
         args.agent_config.model_path = os.path.join(args.absolute_path, args.agent_config.model_path)
 
+    print('-'*20 + "TEST Agent: " + bc.OKGREEN + args.agent.split('/')[-1] + bc.ENDC + '-'*20)
     for rfile in routes_files:
         # check if there are many route files
         if len(routes_files) >1:
             args.agent_config.town = rfile.split('/')[-1].split('_')[1].capitalize()
             # make sure have route folder
             if 'data_save' in args.agent_config:
-                args.agent_config.data_save = os.path.join(args.absolute_path, args.agent_config.data_save, rfile.split('/')[-1].split('.')[0][7:].capitalize())
+                args.agent_config.data_save = os.path.join(args.absolute_path, origin_data_folder, rfile.split('/')[-1].split('.')[0][7:].capitalize())
                 Path(args.agent_config.data_save).mkdir(exist_ok=True, parents=True)
 
-        print('-'*20 + "TEST Agent: " + bc.OKGREEN + args.agent.split('/')[-1] + bc.ENDC + '-'*20)
         args.routes = rfile
-        args.agent = os.path.join(args.absolute_path, args.agent)
         route_name = args.routes.split('/')[-1].split('.')[0]
         args.checkpoint = args.agent.split('/')[-1].split('.')[0] + '.json'
 
@@ -74,13 +74,15 @@ def main(args):
             print(f"Create the result to: {args.checkpoint}")
             
         # run official leaderboard ====>
-        leaderboard_evaluator = LeaderboardEvaluator(args, StatisticsManager())
+        scenario_manager = StatisticsManager()
+        leaderboard_evaluator = LeaderboardEvaluator(args, scenario_manager)
         leaderboard_evaluator.run(args)
+        leaderboard_evaluator.__del__() # important to run this one!!!!!
         # run official leaderboard ====>
 
         # kill CARLA ===> attention will kill all CARLA!
         # server_manager.stop()
-
+        
 if __name__ == '__main__':
     
     start_time = time.time()
