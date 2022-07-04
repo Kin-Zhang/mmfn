@@ -2,7 +2,7 @@
 
 official branch for IROS 2022 paper codes including collecting data, all benchmark in paper, training scripts and evaluations etc.
 
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/mmfn-multi-modal-fusion-net-for-end-to-end/carla-map-leaderboard-on-carla)](https://paperswithcode.com/sota/carla-map-leaderboard-on-carla?p=mmfn-multi-modal-fusion-net-for-end-to-end) [![arXiv](https://img.shields.io/badge/arXiv-1234.56789-b31b1b.svg)](https://arxiv.org/abs/1234.56789)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/mmfn-multi-modal-fusion-net-for-end-to-end/carla-map-leaderboard-on-carla)](https://paperswithcode.com/sota/carla-map-leaderboard-on-carla?p=mmfn-multi-modal-fusion-net-for-end-to-end) [![arXiv](https://img.shields.io/badge/arXiv-2207.00186-b31b1b.svg)](https://arxiv.org/abs/2207.00186)
 
 ## Quickly view
 
@@ -42,15 +42,15 @@ For people who don't have CARLA [在内地的同学可以打开scripts换一下�
 
 ```Shell
 chmod +x scripts/*
-./run/setup_carla.sh
+./scripts/setup_carla.sh
 # input version
 10.1
 # auto download now ...
 ```
 
-Download the vectorize lib with `.so`, will install based on your system version
+Download the vectorized lib with `.so`, will install based on your system version, for commercial reason, we cannot open this part of codes(C++) fully but get the lib file, with lib setting, we can still directly input the opendrive file and output the vectorized lane, pls see more usage in the code
 ```Shell
-./run/setup_lib.sh
+./scripts/setup_lib.sh
 ```
 
 bashrc or zshrc setting:
@@ -139,6 +139,8 @@ The scripts will start a CARLA with specific port number, example running like t
 
 ![](assets/readme/collecting_data.png)
 
+Note: since official stable leaderboard have memory leak issue, [check out here](https://github.com/carla-simulator/leaderboard/issues/81). Please check your memory and kill it to resume. Other notes for CARLA leaderboard [check out here](https://github.com/Kin-Zhang/LAV/discussions/2)
+
 ## 2. Training
 
 No need CARLA in these phase, please remember to modify the train.yml config file and especially ==modify the DATA PATH==
@@ -182,7 +184,7 @@ python team_code/benchmark/transfuser/train.py --device 'cuda:0'
 
 This part is for evaluating to result or leaderboard, you can also download the modal file and try upload to leaderboard through leaderbaord branch. The whole process is the same way like generate dataset
 
-1. Download or Train a model file saved to `log/mmfn`
+1. Download or Train a model file saved to `log/mmfn_img` or `log/mmfn_vec` or `log/mmfn_rad`
 
 3. Keep `config/eval.yaml` same as `collect.yaml` but modified model file location as first step side
 
@@ -195,7 +197,7 @@ This part is for evaluating to result or leaderboard, you can also download the 
       - agent_config: e2e
     
     # ======== e2e.yaml file for model path ============ #
-    model_path: 'log/mmfn_vec' 
+    model_path: 'log/mmfn_img' 
     ```
     
 4. Running eval python script and see result json file in `result` Folder

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 : '
+Copyright (c) 2022 HKUST RAMLAB
 Author: Kin (kin_eng@163.com)
 Date: 2022-06-17
 Usage: Download CARLA script!

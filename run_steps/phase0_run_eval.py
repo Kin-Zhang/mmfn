@@ -19,8 +19,9 @@ from pathlib import Path
 def main(args):
     # start CARLA =======
     args.trafficManagerPort = args.port + 6000
-    # server_manager = CarlaServerManager(args.carla_sh_path, port=args.port)
-    # server_manager.start()
+    if args.if_open_carla:
+        server_manager = CarlaServerManager(args.carla_sh_path, port=args.port)
+        server_manager.start()
 
     # select the route files from folder or just file
     if args.routes.split('/')[-1].split('.')[-1] != 'xml':

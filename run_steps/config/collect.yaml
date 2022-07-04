@@ -5,6 +5,7 @@ carla_sh_path: '/home/kin/CARLA_0.9.10.1/CarlaUE4.sh'
 host: 'localhost'
 port: 2000
 trafficManagerPort: 0
+if_open_carla: true # if not pls check the port is correct
 record: ''
 repetitions: 1
 resume: False
@@ -20,8 +21,8 @@ debug: False
 
 # only for debug ===> or just test the agent
 # routes: 'leaderboard/data/only_one_town.xml'
-towns: ['Town01', 'Town03', 'Town06', 'Town07']
-# towns: ['Town02', 'Town04', 'Town05', 'Town10']
+# towns: ['Town01', 'Town03', 'Town06', 'Town07']
+towns: ['Town02', 'Town04', 'Town05', 'Town10']
 routes: 'leaderboard/data/training_routes/'
 
 scenarios: 'leaderboard/data/all_towns_traffic_scenarios.json'
