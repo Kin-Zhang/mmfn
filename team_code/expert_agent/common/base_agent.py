@@ -164,7 +164,7 @@ class BaseAgent(autonomous_agent.AutonomousAgent):
             with open(os.path.join(open_drive_folder, "opstr.txt"), "w") as text_file:
                 text_file.write(input_data['opendrive'][1]['opendrive'])
             
-            lib_path = os.path.abspath('../../../assets/package/opendrive_parse_lib')
+            lib_path = os.path.abspath('../../../assets/package')
             if os.path.exists(lib_path):
                 # vector representation save
                 tmp_dir = open_drive_folder
@@ -214,7 +214,7 @@ class BaseAgent(autonomous_agent.AutonomousAgent):
             vectormap_lanes = self.rough_map.process(pose2d)
             if vectormap_lanes.shape[0] == 0:
                 vectormap_lanes = np.zeros((1,10,5))
-                print("warning, the vehicle is out of lane")
+                print(f"====> {self.step // 10} warning, the vehicle is out of lane")
                 result['vectormap_lanes'] = vectormap_lanes
             result['vectormap_lanes'] = vectormap_lanes
         return result
@@ -234,8 +234,10 @@ class BaseAgent(autonomous_agent.AutonomousAgent):
                 'theta': theta,
                 'speed': speed,
                 'target_speed': target_speed,
-                'x_command': far_node[0],
-                'y_command': far_node[1],
+                # 'x_command': far_node[0],
+                # 'y_command': far_node[1],
+                'x_command': -far_node[1],
+                'y_command': far_node[0],
                 'command': near_command.value,
                 'steer': steer,
                 'throttle': throttle,

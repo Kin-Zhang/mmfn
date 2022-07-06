@@ -337,16 +337,12 @@ import os
 from tqdm import tqdm
 def build_rmap(all_path: list, lib_path):
     print("start to build rmap. map_number:", len(all_path))
-    bash_path = os.path.join(lib_path, "setup.sh")
-    cmd1 = " . " + bash_path
-    dhdmap_path = os.path.join(lib_path,"lib/dhdmap/rough_map_test_node")
+    opendrive2vec = os.path.join(lib_path,"rough_map_node")
     is_error = False
     for path in tqdm(all_path):
-        
-        cmd2 = dhdmap_path + " " + path
-        cmd = cmd1 + " && " + cmd2
-        print(cmd)
-        tmp = os.popen(cmd).readlines()
+        cmd2 = opendrive2vec + " " + path
+        print(cmd2)
+        tmp = os.popen(cmd2).readlines()
         if (tmp[0]!="ok"):
             is_error = True
             break
