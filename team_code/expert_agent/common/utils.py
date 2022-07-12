@@ -343,7 +343,8 @@ def build_rmap(all_path: list, lib_path):
         cmd2 = opendrive2vec + " " + path
         print(cmd2)
         tmp = os.popen(cmd2).readlines()
-        if (tmp[0]!="ok"):
+        # print(tmp[0])
+        if (tmp[0][-2:]!="ok"):
             is_error = True
             break
     if (is_error):

@@ -6,19 +6,18 @@ class GlobalConfig:
     seq_len = 1 # input timesteps
     pred_len = 4 # future waypoints predicted
 
-    root_dir = '/mnt/qb/geiger/kchitta31/data_06_21'
-    train_towns = ['Town01', 'Town02', 'Town03', 'Town04', 'Town06', 'Town07', 'Town10']
-    val_towns = ['Town05']
+    root_dir = '/home/kin/mmfn/data/new_mmfn'
+    train_towns = ['Town01','Town03','Town04','Town05','Town06']
+    val_towns = ['Town02','Town05']
     train_data, val_data = [], []
     for town in train_towns:
-        train_data.append(os.path.join(root_dir, town+'_tiny'))
-        train_data.append(os.path.join(root_dir, town+'_short'))
+        train_data.append(os.path.join(root_dir, town))
     for town in val_towns:
-        val_data.append(os.path.join(root_dir, town+'_short'))
+        val_data.append(os.path.join(root_dir, town))
 
     # visualizing transformer attention maps
-    viz_root = '/mnt/qb/geiger/kchitta31/data_06_21'
-    viz_towns = ['Town05_tiny']
+    viz_root = '/home/kin/transfuser/data/mmfn'
+    viz_towns = ['Town05']
     viz_data = []
     for town in viz_towns:
         viz_data.append(os.path.join(viz_root, town))

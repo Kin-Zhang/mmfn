@@ -224,7 +224,7 @@ If all setting is correct, you will see eval like this one, pls remember to chan
 
 ## Acknowledgements
 
-This implementation is based on code from several repositories. Please see our paper reference part to get more information on our reference
+This implementation is based on codes from several repositories. Thanks for these authors who kindly open-sourcing their work to the community. Please see our paper reference part to get more information on our reference
 
 - [LBC](https://github.com/dotchen/LearningByCheating), [WorldOnRails](https://github.com/dotchen/WorldOnRails)
 - [Transfuser](https://github.com/autonomousvision/transfuser)

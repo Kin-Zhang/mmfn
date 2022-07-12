@@ -1,18 +1,18 @@
 # please remember to change this!!! TODO or will change by modi
 absolute_path: '/home/kin/mmfn'
 
-data_folder: 'data/train'
+data_folder: 'data/nss_0702'
 
-train_towns: ['Town01'] # , 'Town02', 'Town03', 'Town04', 'Town05', 'Town06', 'Town07', 'Town10'
-val_towns: ['Town01']
+train_towns: ['Town03'] # 'Town01', 'Town02', 'Town03', 'Town04', 'Town05', 'Town06', 'Town07', 'Town10' [short, tiny]
+val_towns: ['Town04'] # [long]
 
 # for saving the log and model, pls change when the model is different
 logdir: 'log/mmfn_img'
 # [model_vec, model_img, model_rad] pls see the paper for detail about the different
 train_agent:
-  entry_point: team_code.mmfn_utils.models.model_img:MMFN
-  # entry_point: team_code.mmfn_utils.models.model_vec:MMFN
-  # entry_point: team_code.mmfn_utils.models.model_rad:MMFN
+  entry_point: mmfn_utils.models.model_img:MMFN
+  # entry_point: mmfn_utils.models.model_vec:MMFN
+  # entry_point: mmfn_utils.models.model_rad:MMFN
 
 # will check whether computer have multi gpu
 is_multi_gpu: True

@@ -22,9 +22,9 @@ from torch.utils.data.distributed import DistributedSampler
 
 torch.backends.cudnn.benchmark = True
 
-from team_code.mmfn_utils.datasets.config import GlobalConfig
-from team_code.mmfn_utils.datasets.dataloader import CARLA_Data, PRE_Data
-from team_code.mmfn_utils.datasets.data_utils import collate_single_cpu
+from mmfn_utils.datasets.config import GlobalConfig
+from mmfn_utils.datasets.dataloader import CARLA_Data, PRE_Data
+from mmfn_utils.datasets.data_utils import collate_single_cpu
 from utils import bcolors as bc
 from utils import load_entry_point, init_torch
 

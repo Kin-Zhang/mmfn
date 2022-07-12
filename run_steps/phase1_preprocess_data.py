@@ -21,8 +21,8 @@ from omegaconf import DictConfig
 import pickle
 from pathlib import Path
 
-from team_code.mmfn_utils.datasets.config import GlobalConfig
-from team_code.mmfn_utils.datasets.dataloader import CARLA_Data, PRE_Data
+from mmfn_utils.datasets.config import GlobalConfig
+from mmfn_utils.datasets.dataloader import CARLA_Data, PRE_Data
 from utils import bcolors as bc
 
 torch.backends.cudnn.benchmark = True
