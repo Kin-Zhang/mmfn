@@ -2,7 +2,7 @@
 
 official branch for IROS 2022 paper codes including collecting data, all benchmark in paper, training scripts and evaluations etc.
 
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/mmfn-multi-modal-fusion-net-for-end-to-end/carla-map-leaderboard-on-carla)](https://paperswithcode.com/sota/carla-map-leaderboard-on-carla?p=mmfn-multi-modal-fusion-net-for-end-to-end) [![arXiv](https://img.shields.io/badge/arXiv-2207.00186-b31b1b.svg)](https://arxiv.org/abs/2207.00186)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/mmfn-multi-modal-fusion-net-for-end-to-end-1/carla-map-leaderboard-on-carla)](https://paperswithcode.com/sota/carla-map-leaderboard-on-carla?p=mmfn-multi-modal-fusion-net-for-end-to-end-1) [![arXiv](https://img.shields.io/badge/arXiv-2207.00186-b31b1b.svg)](https://arxiv.org/abs/2207.00186)
 
 ## Quickly view
 
