@@ -168,10 +168,11 @@ class BaseAgent(autonomous_agent.AutonomousAgent):
             if os.path.exists(lib_path):
                 # vector representation save
                 tmp_dir = open_drive_folder
-                build_rmap([tmp_dir], lib_path)
-                self.rough_map.read(os.path.join(open_drive_folder,"a.rmap"))
-                print("load rough_map which lane_num = ", len(self.rough_map.lanes))
-                self.rough_map_have_load = True
+                is_error = build_rmap([tmp_dir], lib_path)
+                if not is_error:
+                    self.rough_map.read(os.path.join(open_drive_folder,"a.rmap"))
+                    print("load rough_map which lane_num = ", len(self.rough_map.lanes))
+                    self.rough_map_have_load = True
 
     def tick(self, input_data,timestamp):
 
