@@ -5,7 +5,7 @@ carla_sh_path: '/home/kin/CARLA_0.9.10.1/CarlaUE4.sh'
 host: 'localhost'
 port: 2000
 trafficManagerPort: 0
-if_open_carla: true # if not pls check the port is correct
+if_open_carla: True # if not pls check the port is correct
 record: ''
 repetitions: 1
 resume: False
@@ -31,11 +31,14 @@ track: 'MAP' # 'SENSORS'
 
 # ====================== Expert Agent ========================= #
 # agent: 'team_code/expert_agent/human_agent.py'
-agent: 'team_code/expert_agent/mmfn_pilot.py'
 # agent: 'team_code/expert_agent/auto_pilot.py'
+agent: 'team_code/expert_agent/mmfn_pilot.py'
 defaults:
   - agent_config: expert
 
+# agent: 'team_code/expert_agent/mmfn_ppilot.py'
+# defaults:
+#   - agent_config: force_expert
 # ====================== E2E Agent ========================= #
 # agent: 'team_code/e2e_agent/mmfn_radar.py'
 # agent: 'team_code/e2e_agent/mmfn_vectornet.py'

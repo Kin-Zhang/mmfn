@@ -6,7 +6,7 @@ import carla
 
 from leaderboard.autoagents import autonomous_agent
 from .planner_controller import RoutePlanner
-from .utils import imu_msg, LocalizationOperator, from_imu, from_gps, build_rmap, RoughMap
+from .utils import imu_msg, LocalizationOperator, from_imu, from_gps, build_rmap, RoughMap, bc
 from .carla_birdeye_view import BirdViewProducer, BirdViewCropType, PixelDimensions
 import numpy as np
 from PIL import Image
@@ -265,8 +265,27 @@ class BaseAgent(autonomous_agent.AutonomousAgent):
         
         if self.rough_map_have_load:
             np.save(self.save_path / 'vectormap' / ('%04d.npy' % frame), tick_data['vectormap_lanes'], allow_pickle=True)
+        
+        if self.config.weather_change:
+            self.change_weather()
 
-        self.change_weather()
+    def force_destory_actor(self, obs, light, walker):
+        if obs:
+            self._world.get_actor(obs.id).destroy()
+            self.stop_counter = 0
+            print(f"{self.step}, {bc.WARNING}ATTENTION:{bc.ENDC} force to detroy actor {obs.id} stopping for a long time")
+        elif walker:
+            self._world.get_actor(walker.id).destroy()
+            self.stop_counter = 0
+            print(f"{self.step}, {bc.WARNING}ATTENTION:{bc.ENDC} force to detroy actor {walker.id} stopping for a long time")
+        elif light and self.stop_counter>self.config.counter_destory*2:
+            light.set_green_time(10.0)
+            light.set_state(carla.TrafficLightState.Green)
+            self.stop_counter = 0
+            print(f"{self.step}, {bc.WARNING}ATTENTION:{bc.ENDC} force to setting green light {light.id}")
+        else:
+            print(f"{bc.WARNING}==========> warnning!!!! {bc.ENDC} None factor trigger the stop!!!")
+            return
 
     def change_weather(self):
         index = random.choice(range(len(WEATHERS)))

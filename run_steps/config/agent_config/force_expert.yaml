@@ -1,7 +1,7 @@
 force_destory_actor: True # maybe have better effects!
-counter_destory: 200
+counter_destory: 300
 
-weather_change: True # whether change the weather
+weather_change: False # whether change the weather
 max_stop_num: 300 
 stop_thresh: 0.1
 save_video_fps: 20

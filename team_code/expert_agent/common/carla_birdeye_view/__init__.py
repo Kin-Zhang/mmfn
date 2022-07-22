@@ -186,7 +186,7 @@ class BirdViewProducer:
                 LOGGER.info(f"Saved static layers to cache file: {cache_path}")
 
     def parametrized_cache_path(self) -> str:
-        cache_dir = Path("/home/kin/birdview_v3_cache")
+        cache_dir = Path.home()/"birdview_v3_cache"
         cache_dir.mkdir(parents=True, exist_ok=True)
         opendrive_content_hash = generate_opendrive_content_hash(self._map)
         cache_filename = (
