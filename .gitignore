@@ -141,3 +141,5 @@ data/*
 assets/package/*
 
 log/*
+
+*.pth
