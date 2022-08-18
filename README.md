@@ -34,8 +34,8 @@ Clone the repo and build the environment
 git clone https://github.com/Kin-Zhang/mmfn
 cd mmfn
 conda create -n mmfn python=3.7
-pip3 install -r requirements.txt
 conda activate mmfn
+pip3 install -r requirements.txt
 ```
 
 For people who don't have CARLA [在内地的同学可以打开scripts换一下函数 走镜像下载更快点.. ]
