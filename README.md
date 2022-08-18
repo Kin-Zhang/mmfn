@@ -112,10 +112,14 @@ defaults:
   - agent_config: expert
 ```
 
-Please write great port according to the CARLA server, and inside the script it will try to use Epic or vulkan mode since opengl mode will have black point on raining day
+Please write great port according to the CARLA server, and inside the script it will try to use Epic or vulkan mode since opengl mode will have black point on raining day, after setting the `absolute_path` and `carla_sh_path`, directly run this: [Hine: If the GPU memeory is bigger than 12G, and CPU memory with big swap space will be better.]
 
 ```bash
-python run_steps/phase0_run_eval.py
+conda activate mmfn
+python run_steps/phase0_run_eval.py port=2010 towns="['Town02', 'Town04', 'Town05', 'Town10']" resume=True if_open_carla=True
+
+# if you have big GPU memory, you can start with these two simultaneously.
+python run_steps/phase0_run_eval.py port=2000 towns="['Town01', 'Town03', 'Town06', 'Town07']" resume=True if_open_carla=True
 ```
 
 The dataset folder tree will like these one:
