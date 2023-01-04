@@ -217,10 +217,11 @@ If all setting is correct, you will see eval like this one, pls remember to chan
 ## Cite Us
 
 ```latex
-@inproceedings{mmfnzhang,
-  title={MMFN: Multi-Modal Fusion Net for End-to-End Autonomous Driving},
-  author={Qingwen Zhang, Mingkai Tang, Ruoyu Geng, Feiyi Chen, Ren Xin, Lujia Wang},
-  booktitle={2022 IEEE International Conference on Intelligent Robotics and Systems (IROS)},
+@inproceedings{zhang2022mmfn,
+  title={MMFN: Multi-Modal-Fusion-Net for End-to-End Driving},
+  author={Zhang, Qingwen and Tang, Mingkai and Geng, Ruoyu and Chen, Feiyi and Xin, Ren and Wang, Lujia},
+  booktitle={2022 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)},
+  pages={8638--8643},
   year={2022},
   organization={IEEE}
 }
