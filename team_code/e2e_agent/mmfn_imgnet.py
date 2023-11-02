@@ -10,7 +10,7 @@ import numpy as np
 from PIL import Image
 
 from leaderboard.autoagents import autonomous_agent
-from mmfn_utils.models.model_vec import MMFN
+from mmfn_utils.models.model_img import MMFN
 from mmfn_utils.datasets.config import GlobalConfig
 from mmfn_utils.datasets.dataloader import scale_and_crop_image, lidar_to_histogram_features, transform_2d_points
 from expert_agent.common.carla_birdeye_view import BirdViewProducer, BirdViewCropType, PixelDimensions
