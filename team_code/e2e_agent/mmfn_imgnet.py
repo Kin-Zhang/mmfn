@@ -279,6 +279,7 @@ class MMFNAgent(autonomous_agent.AutonomousAgent):
 
 		self.pred_wp = self.net(self.input_buffer['rgb'], self.lidar_processed, \
 								[map_list for map_list in self.input_buffer['opendrive']], \
+								None, None, None
 								target_point, gt_velocity)
 		# print('step: ', self.step, 'pred_wp: ', self.pred_wp, 'target_waypoint',target_point, 'velocity', round(tick_data['speed'],2))
 		steer, throttle, brake, metadata = self.net.control_pid(self.pred_wp, gt_velocity)
