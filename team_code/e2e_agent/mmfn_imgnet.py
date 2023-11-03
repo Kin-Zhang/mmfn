@@ -58,7 +58,6 @@ class MMFNAgent(autonomous_agent.AutonomousAgent):
 		
 		self.imu_data = utils.imu_msg()
 		self.agent_pose = utils.LocalizationOperator()
-		self.smooth_loc = utils.smooth_queue()
 		self.prev_lidar = None
 
 	def _init(self):
@@ -157,9 +156,6 @@ class MMFNAgent(autonomous_agent.AutonomousAgent):
 		self.agent_vel = np.around(input_data['speed'][1]['speed'],2)
 		self.agent_loc = utils.from_gps(input_data['gps'][1][0],input_data['gps'][1][1],input_data['gps'][1][2])
 
-		# self.smooth_loc.updateadd(self.agent_loc)
-		# self.agent_loc = self.smooth_loc.smooth(self.agent_loc) if len(self.smooth_loc)>2 else self.agent_loc
-		
 		self.imu_data.update(input_data['imu'], timestamp)
 		self.yaw, self.agent_rot = utils.from_imu(self, self.imu_data)
 		self.agent_pose.update_pose(self.agent_loc, self.agent_vel, self.imu_data, self.yaw, self.agent_rot, USE_EKF=False)
