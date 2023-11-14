@@ -29,16 +29,6 @@ scenarios: 'leaderboard/data/all_towns_traffic_scenarios.json'
 
 track: 'MAP' # 'SENSORS'
 
-# ====================== Expert Agent ========================= #
-# agent: 'team_code/expert_agent/human_agent.py'
-# agent: 'team_code/expert_agent/auto_pilot.py'
-# agent: 'team_code/expert_agent/mmfn_pilot.py'
-# defaults:
-#   - agent_config: expert
-
-# agent: 'team_code/expert_agent/mmfn_ppilot.py'
-# defaults:
-#   - agent_config: force_expert
 # ====================== E2E Agent ========================= #
 # agent: 'team_code/e2e_agent/mmfn_radar.py'
 agent: 'team_code/e2e_agent/mmfn_vectornet.py'

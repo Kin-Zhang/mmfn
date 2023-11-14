@@ -39,9 +39,3 @@ defaults:
 # agent: 'team_code/expert_agent/mmfn_ppilot.py'
 # defaults:
 #   - agent_config: force_expert
-# ====================== E2E Agent ========================= #
-# agent: 'team_code/e2e_agent/mmfn_radar.py'
-# agent: 'team_code/e2e_agent/mmfn_vectornet.py'
-# agent: 'team_code/e2e_agent/mmfn_imgnet.py'
-# defaults:
-#   - agent_config: e2e # pls name the model as 'best_model.pth'
