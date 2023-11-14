@@ -84,13 +84,8 @@ The dataset is structured as follows:
 
 ### How to Generate
 
-First, please modify the config files and on `.zshrc` or `.bashrc` remember to export your `CARLA_ROOT`
-
+First, please modify the config files and on `.zshrc` or `.bashrc` remember to export your `CARLA_ROOT` as above said, Here is [config file](run_steps/config/collect.yaml) preview:
 ```bash
-# please remember to change this!!! TODO or will change by modi
-absolute_path: '/home/kin/mmfn'
-carla_sh_path: '/home/kin/CARLA_0.9.10.1/CarlaUE4.sh'
-
 # Seed used by the TrafficManager (default: 0)
 port: 2000
 trafficManagerSeed: 0
@@ -112,10 +107,20 @@ defaults:
   - agent_config: expert
 ```
 
-Please write great port according to the CARLA server, and inside the script it will try to use Epic or vulkan mode since opengl mode will have black point on raining day, after setting the `absolute_path` and `carla_sh_path`, directly run this: [Hine: If the GPU memeory is bigger than 12G, and CPU memory with big swap space will be better.]
+Please write great port according to the CARLA server, and inside the script it will try to use Epic or vulkan mode since opengl mode will have black point on raining day, check the folder path and carla root to your path, then directly run this: [Hine: If the GPU memeory is bigger than 12G, and CPU memory with big swap space will be better.]
 
 ```bash
 conda activate mmfn
+
+# << Leaderboard setting
+# ===> pls remeber to change this one
+export CODE_FOLDER=/home/kin/mmfn
+export CARLA_ROOT=/home/kin/CARLA_0.9.10.1
+# ===> pls remeber to change this one
+export SCENARIO_RUNNER_ROOT=${CODE_FOLDER}/scenario_runner
+export LEADERBOARD_ROOT=${CODE_FOLDER}/leaderboard
+export PYTHONPATH="${CARLA_ROOT}/PythonAPI/carla/":"${SCENARIO_RUNNER_ROOT}":"${LEADERBOARD_ROOT}":"${CARLA_ROOT}/PythonAPI/carla/dist/carla-0.9.10-py3.7-linux-x86_64.egg":"${CODE_FOLDER}/team_code":${PYTHONPATH}
+
 python run_steps/phase0_run_eval.py port=2010 towns="['Town02', 'Town04', 'Town05', 'Town10']" resume=True if_open_carla=True
 
 # if you have big GPU memory, you can start with these two simultaneously.
@@ -190,7 +195,7 @@ This part is for evaluating to result or leaderboard, you can also download the 
 
 1. Download or Train a model file saved to `log/mmfn_img` or `log/mmfn_vec` or `log/mmfn_rad`. Pretrained weight can [download here](https://hkustconnect-my.sharepoint.com/:f:/g/personal/qzhangcb_connect_ust_hk/EvMM_DMzBppNvC_Scew4-SgB4RWvI-uebxZ1AiIgng9a5g), check [issue](https://github.com/Kin-Zhang/mmfn/issues/14) note it's not the best weight or maybe better than papers. Try train on your own dataset for fair comparsion.
 
-3. Keep `config/eval.yaml` same as `collect.yaml` but modified model file location as first step side. The first one will take 1-2 mins because we are in traffic light. Be patience..
+2. Check [config/eval.yaml](run_steps/config/eval.yaml) and inside `e2e.yaml` file spefice model weight path. 
 
     ```bash
     routes: 'leaderboard/data/only_one_town.xml'
@@ -204,15 +209,21 @@ This part is for evaluating to result or leaderboard, you can also download the 
     model_path: 'log/mmfn_img' 
     ```
     
-4. Running eval python script and see result json file in `result` Folder
+3. Running eval python script and see result json file in `result` Folder
 
     ```bash
     python run_steps/phase0_run_eval.py --config-name=eval
     ```
 
+4. The first one will take 1-2 mins because we are in traffic light. Be patience..
+
 If all setting is correct, you will see eval like this one, pls remember to change route to `only_one_town` for debug.
 
 ![](assets/readme/running_example.png)
+
+And a demo video in CARLA main window view (speed up) the weight I used is `mmfn_vec` in [dowload link](https://hkustconnect-my.sharepoint.com/:f:/g/personal/qzhangcb_connect_ust_hk/EvMM_DMzBppNvC_Scew4-SgB4RWvI-uebxZ1AiIgng9a5g):
+
+https://github.com/Kin-Zhang/mmfn/assets/35365764/02be250c-1ab5-46a8-be99-0480df215e87
 
 ## Cite Us
 
