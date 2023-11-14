@@ -189,7 +189,7 @@ class VectornetAgent(autonomous_agent.AutonomousAgent):
             [np.cos(theta), -np.sin(theta)],
             [np.sin(theta), np.cos(theta)]
             ])
-        print(f"step: {self.step} =======> from ({pos[0]:.2f} ,{pos[1]:.2f}),target:({next_wp[0]:.2f},{next_wp[1]:.2f})")
+        # print(f"step: {self.step} =======> from ({pos[0]:.2f} ,{pos[1]:.2f}),target:({next_wp[0]:.2f},{next_wp[1]:.2f})")
         local_command_point = np.array([next_wp[0]-pos[0], next_wp[1]-pos[1]])
         local_command_point = R.T.dot(local_command_point)
         result['target_point'] = tuple(local_command_point)

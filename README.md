@@ -188,9 +188,9 @@ python team_code/benchmark/transfuser/train.py --device 'cuda:0'
 
 This part is for evaluating to result or leaderboard, you can also download the modal file and try upload to leaderboard through leaderbaord branch. The whole process is the same way like generate dataset
 
-1. Download or Train a model file saved to `log/mmfn_img` or `log/mmfn_vec` or `log/mmfn_rad`
+1. Download or Train a model file saved to `log/mmfn_img` or `log/mmfn_vec` or `log/mmfn_rad`. Pretrained weight can [download here](https://hkustconnect-my.sharepoint.com/:f:/g/personal/qzhangcb_connect_ust_hk/EvMM_DMzBppNvC_Scew4-SgB4RWvI-uebxZ1AiIgng9a5g), check [issue](https://github.com/Kin-Zhang/mmfn/issues/14) note it's not the best weight or maybe better than papers. Try train on your own dataset for fair comparsion.
 
-3. Keep `config/eval.yaml` same as `collect.yaml` but modified model file location as first step side
+3. Keep `config/eval.yaml` same as `collect.yaml` but modified model file location as first step side. The first one will take 1-2 mins because we are in traffic light. Be patience..
 
     ```bash
     routes: 'leaderboard/data/only_one_town.xml'
@@ -207,7 +207,7 @@ This part is for evaluating to result or leaderboard, you can also download the 
 4. Running eval python script and see result json file in `result` Folder
 
     ```bash
-    python run_steps/phase0_run_eval.py
+    python run_steps/phase0_run_eval.py --config-name=eval
     ```
 
 If all setting is correct, you will see eval like this one, pls remember to change route to `only_one_town` for debug.
@@ -231,9 +231,4 @@ If all setting is correct, you will see eval like this one, pls remember to chan
 
 This implementation is based on codes from several repositories. Thanks for these authors who kindly open-sourcing their work to the community. Please see our paper reference part to get more information on our reference
 
-- [LBC](https://github.com/dotchen/LearningByCheating), [WorldOnRails](https://github.com/dotchen/WorldOnRails)
-- [Transfuser](https://github.com/autonomousvision/transfuser)
-- [CARLA Leaderboard](https://github.com/carla-simulator/leaderboard), [Scenario Runner](https://github.com/carla-simulator/scenario_runner)
-
-- [carla-brid-view](https://github.com/deepsense-ai/carla-birdeye-view)
-- [pylot](https://github.com/erdos-project/pylot)
+❤️: [LBC](https://github.com/dotchen/LearningByCheating), [WorldOnRails](https://github.com/dotchen/WorldOnRails), [Transfuser](https://github.com/autonomousvision/transfuser), [carla-brid-view](https://github.com/deepsense-ai/carla-birdeye-view), [pylot](https://github.com/erdos-project/pylot), [CARLA Leaderboard 1.0](https://github.com/carla-simulator/leaderboard), [Scenario Runner 1.0](https://github.com/carla-simulator/scenario_runner)

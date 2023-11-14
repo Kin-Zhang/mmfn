@@ -17,3 +17,4 @@ elif (( $(echo "$ubuntu_version == 16.04" |bc -l) )); then
 else
     echo "There is no version package for: $ubuntu_version"
 fi
+chmod +wx assets/package/*
