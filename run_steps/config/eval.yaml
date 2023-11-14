@@ -1,6 +1,6 @@
-# please remember to change this!!! TODO or will change by modi
-absolute_path: '/home/kin/mmfn'
-carla_sh_path: '/home/kin/CARLA_0.9.10.1/CarlaUE4.sh'
+# will auto change based on env path we already export.
+absolute_path: ''
+carla_sh_path: ''
 
 host: 'localhost'
 port: 2000

@@ -17,6 +17,10 @@ from pathlib import Path
 
 @hydra.main(config_path="config", config_name="collect")
 def main(args):
+    args.absolute_path = os.environ['CODE_FOLDER']
+    args.carla_sh_path = os.path.join(os.environ['CARLA_ROOT'], "CarlaUE4.sh")
+    # print(args.absolute_path, args.carla_sh_path)
+
     # start CARLA =======
     args.trafficManagerPort = args.port + 6000
     if args.if_open_carla:
