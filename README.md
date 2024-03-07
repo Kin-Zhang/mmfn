@@ -193,7 +193,7 @@ python team_code/benchmark/transfuser/train.py --device 'cuda:0'
 
 This part is for evaluating to result or leaderboard, you can also download the modal file and try upload to leaderboard through leaderbaord branch. The whole process is the same way like generate dataset
 
-1. Download or Train a model file saved to `log/mmfn_img` or `log/mmfn_vec` or `log/mmfn_rad`. Pretrained weight can [download here](https://hkustconnect-my.sharepoint.com/:f:/g/personal/qzhangcb_connect_ust_hk/EvMM_DMzBppNvC_Scew4-SgB4RWvI-uebxZ1AiIgng9a5g), check [issue](https://github.com/Kin-Zhang/mmfn/issues/14) note it's not the best weight or maybe better than papers. Try train on your own dataset for fair comparsion.
+1. Download or Train a model file saved to `log/mmfn_img` or `log/mmfn_vec` or `log/mmfn_rad`. Pretrained weight can [download here](https://hkustconnect-my.sharepoint.com/:f:/g/personal/qzhangcb_connect_ust_hk/EkUVbfjq4idJrOy1zdIv9fEBoQr5caY2TBDxtYeJVJ0ZrQ?e=4xJsxb), check [issue](https://github.com/Kin-Zhang/mmfn/issues/14) note it's not the best weight or maybe better than papers. Try train on your own dataset for fair comparsion.
 
 2. Check [config/eval.yaml](run_steps/config/eval.yaml) and inside `e2e.yaml` file spefice model weight path. 
 
@@ -221,7 +221,7 @@ If all setting is correct, you will see eval like this one, pls remember to chan
 
 ![](assets/readme/running_example.png)
 
-And a demo video in CARLA main window view (speed up) the weight I used is `mmfn_vec` in [dowload link](https://hkustconnect-my.sharepoint.com/:f:/g/personal/qzhangcb_connect_ust_hk/EvMM_DMzBppNvC_Scew4-SgB4RWvI-uebxZ1AiIgng9a5g):
+And a demo video in CARLA main window view (speed up) the weight I used is `mmfn_vec` in [dowload link](https://hkustconnect-my.sharepoint.com/:f:/g/personal/qzhangcb_connect_ust_hk/EkUVbfjq4idJrOy1zdIv9fEBoQr5caY2TBDxtYeJVJ0ZrQ?e=4xJsxb):
 
 https://github.com/Kin-Zhang/mmfn/assets/35365764/02be250c-1ab5-46a8-be99-0480df215e87
 
