@@ -18,7 +18,7 @@ version: 2022
 date-released: 2022
 url: "https://github.com/Kin-Zhang/mmfn"
 preferred-citation:
-  type: inproceedings
+  type: conference-paper
   authors:
     - family-names: "Zhang"
       given-names: "Qingwen"
