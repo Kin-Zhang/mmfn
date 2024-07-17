@@ -1,0 +1,39 @@
+cff-version: 1.2.0
+message: "If you find this repo is useful, please cite it as below."
+authors:
+  - family-names: "Zhang"
+    given-names: "Qingwen"
+  - family-names: "Tang"
+    given-names: "Mingkai"
+  - family-names: "Geng"
+    given-names: "Ruoyu"
+  - family-names: "Chen"
+    given-names: "Feiyi"
+  - family-names: "Xin"
+    given-names: "Ren"
+  - family-names: "Wang"
+    given-names: "Lujia"
+title: "MMFN: Multi-Modal-Fusion-Net for End-to-End Driving"
+version: 2022
+date-released: 2022
+url: "https://github.com/Kin-Zhang/mmfn"
+preferred-citation:
+  type: inproceedings
+  authors:
+    - family-names: "Zhang"
+      given-names: "Qingwen"
+    - family-names: "Tang"
+      given-names: "Mingkai"
+    - family-names: "Geng"
+      given-names: "Ruoyu"
+    - family-names: "Chen"
+      given-names: "Feiyi"
+    - family-names: "Xin"
+      given-names: "Ren"
+    - family-names: "Wang"
+      given-names: "Lujia"
+  title: "MMFN: Multi-Modal-Fusion-Net for End-to-End Driving"
+  booktitle: "2022 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)"
+  pages: "8638-8643"
+  year: 2022
+  organization: "IEEE"
