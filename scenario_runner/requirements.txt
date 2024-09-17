@@ -6,7 +6,7 @@ xmlschema==1.0.18
 carla
 ephem
 tabulate
-opencv-python==4.2.0.32
+opencv-python==4.8.1.78
 numpy
 matplotlib
 six
